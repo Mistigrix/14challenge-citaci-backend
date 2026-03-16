@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Citation {
@@ -18,4 +17,3 @@ model Citation {
 
   @@index([category])
 }
-

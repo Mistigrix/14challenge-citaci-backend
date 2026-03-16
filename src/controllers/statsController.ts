@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../lib/prisma';
 import { DB_CATEGORIES } from '../types';
+import prisma from '../utils/prisma';
 
 export async function getStats(req: Request, res: Response, next: NextFunction) {
   try {

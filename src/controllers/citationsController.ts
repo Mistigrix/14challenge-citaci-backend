@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
-import { prisma } from '../lib/prisma';
 import { VALID_CATEGORIES, DB_CATEGORIES } from '../types';
+import prisma from '../utils/prisma';
 
 const citationSchema = z.object({
   text: z.string().min(1, 'Le texte est requis'),

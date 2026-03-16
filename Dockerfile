@@ -1,32 +1,34 @@
-FROM node:20-slim AS builder
+# ---------- Build ----------
+FROM node:20-slim AS build
 
 WORKDIR /app
 
 COPY package*.json ./
-COPY prisma ./prisma/
 RUN npm ci
 
+COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
 RUN npx prisma generate
 
 COPY tsconfig.json ./
-COPY src ./src/
+COPY src ./src
 RUN npm run build
 
-FROM node:20-slim AS production
-
-WORKDIR /app
+# ---------- Runtime ----------
+FROM node:20-slim
 
 ENV NODE_ENV=production
 
+WORKDIR /app
+
 COPY package*.json ./
-COPY prisma ./prisma/
 RUN npm ci --omit=dev
 
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
+COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
+RUN npx prisma generate
 
-COPY --from=builder /app/dist ./dist
+COPY --from=build /app/dist ./dist
 
 EXPOSE 3000
-
-CMD ["sh", "-c", "npx prisma db push && node dist/index.js"]
+CMD ["node", "dist/index.js"]

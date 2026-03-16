@@ -18,3 +18,4 @@ model Citation {
 
   @@index([category])
 }
+
